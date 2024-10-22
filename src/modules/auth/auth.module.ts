@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
+import { UuidModule } from 'nestjs-uuid';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuthController } from './auth.controller';
       secret: process.env.JWTKEY,
       signOptions: { expiresIn: process.env.TOKEN_EXPIRATION },
     }),
+    UuidModule,
   ],
   providers: [AuthService, localStrategy, jwtStrategy],
   controllers: [AuthController],

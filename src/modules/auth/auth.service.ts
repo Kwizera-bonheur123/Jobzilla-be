@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
+import { UuidService } from 'nestjs-uuid';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly uuidService: UuidService,
   ) {}
   async validateUser(email: string, pass: string) {
     const user = await this.usersService.findOneByEmail(email);
@@ -26,10 +28,20 @@ export class AuthService {
     const token = await this.generateToken(user);
     return { user, token };
   }
+
   public async create(user) {
     //hash the password
     const pass = await this.hashPassword(user.password);
-    const newUser = await this.usersService.create({ ...user, password: pass });
+    const newUser = await this.usersService.create({
+      ...user,
+      id: this.uuidService.generate({ version: 4 }),
+      password: pass,
+      role: 'CANDIDATE',
+      isVerified: false,
+      isPasswordExpired: false,
+      lastTimePasswordUpdated: new Date(),
+      isActive: true,
+    });
 
     //Genarate token
     const token = await this.generateToken(newUser.dataValues);

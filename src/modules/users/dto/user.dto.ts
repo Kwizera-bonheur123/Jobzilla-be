@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsString,
@@ -8,23 +9,28 @@ import {
 } from 'class-validator';
 
 export class createUserDto {
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   firstName: string;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   lastName: string;
 
+  @ApiProperty()
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
+  @ApiProperty()
   @IsEnum(['male', 'female'], {
     message: 'Enter valid gender male of female!',
   })
   gender: string;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @MinLength(8, {
